@@ -1,5 +1,5 @@
 ---
-draft: true
+draft: false
 title: Custom Thumbnail Renderer
 date: 2022-06-02T00:51:53-04:00
 tags:
@@ -8,9 +8,11 @@ tags:
   - ui
   - editor
 image: /img/notes-ue-thumbnail-renderer.jpg
+images: [/img/notes-ue-thumbnail-renderer.jpg]
 summary: Create a custom thumbnail renderer for your own classes, like an icon
   for a gameplay item data asset.
 ---
+
 A custom thumbnail renderer allows you to draw anything you want in the thumbnail of an asset in the Content Browser. This is what allows meshes, materials, and textures in the editor to display something useful, instead of a generic icon. In this example a custom thumbnail renderer is used to give a unique icon to gameplay item data assets, so that you can browse for pickups, potions, or any other game items easily.
 
 - Thumbnail renderers handle drawing asset thumbnails in the Content Browser.

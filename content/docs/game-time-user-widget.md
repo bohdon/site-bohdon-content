@@ -1,12 +1,12 @@
 ---
-draft: true
+draft: false
 title: Game Time User Widget
 date: 2022-07-04T22:22:53-04:00
 tags:
   - unreal
   - ui
 image: /img/notes-game-time-user-widget.jpg
-imageIcon: fa-sharp fa-light fa-stopwatch
+images: [/img/notes-game-time-user-widget.jpg]
 summary: Create a UserWidget that ticks using Game time so that it respects pausing and slowmo in animations and timers.
 ---
 

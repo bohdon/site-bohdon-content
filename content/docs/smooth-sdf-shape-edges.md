@@ -1,10 +1,10 @@
 ---
-draft: true
+draft: false
 title: "Smooth SDF Shape Edges"
 date: 2023-11-29T11:51:02-05:00
-tags: [unreal, graphics, ui]
-image:
-imageIcon: fa-sharp fa-light fa-shapes
+tags: [unreal, graphics, materials, ui]
+image: /img/smooth-sdf-shape-edges/page-image.png
+images: [/img/smooth-sdf-shape-edges/page-image.png]
 summary: Methods for resolving SDF gradients into crisp clean shapes for UI and VFX materials.
 ---
 
@@ -185,7 +185,3 @@ does a great job explaining. Some key pieces are copied here:
 > Derivatives are calculated by taking differences between the pixels in a quad. For instance, ddx will subtract the values in the pixels on the left side of the quad from the values on the right side, and ddy will subtract the bottom pixels from the top ones. The differences can then be returned as the derivative to all four pixels in the quad.
 
 This is a big reason why I prefer using the DDX of the UVs, since comparing quads is much more stable.
-
-// TODO: performance
-
-// TODO: fix or remove comments in material graphs
