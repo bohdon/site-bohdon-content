@@ -3,7 +3,7 @@ draft: false
 title: "Smooth SDF Shape Edges"
 date: 2023-11-29T11:51:02-05:00
 tags: [unreal, graphics, materials, ui]
-image: /img/smooth-sdf-shape-edges/page-image.png
+image: /img/smooth-sdf-shape-edges/page-icon.png
 images: [/img/smooth-sdf-shape-edges/page-image.png]
 summary: Methods for resolving SDF gradients into crisp clean shapes for UI and VFX materials.
 ---
@@ -188,3 +188,22 @@ does a great job explaining. Some key pieces are copied here:
 > Derivatives are calculated by taking differences between the pixels in a quad. For instance, ddx will subtract the values in the pixels on the left side of the quad from the values on the right side, and ddy will subtract the bottom pixels from the top ones. The differences can then be returned as the derivative to all four pixels in the quad.
 
 This is a big reason why I prefer using the DDX of the UVs, since comparing quads is much more stable.
+
+### Full Example
+
+Here's a full material graph of a Circle SDF, converted to a stroke, then filled using the last technique above,
+with some nodes expanded to see previews.
+
+![ddx uvs graph](/img/smooth-sdf-shape-edges/graph_fullCircleSDFNoFuncs.png "crisp circle SDF with no material functions")
+
+To make this more versatile you can use material functions for the main operations of this graph, and get something
+like the following:
+
+![ddx uvs graph](/img/smooth-sdf-shape-edges/graph_fullCircleSDFFuncs.png "the same graph with material functions")
+
+These functions are available in the [MGFX plugin](https://github.com/bohdon/MGFXPlugin) if you want to check them out.
+
+> More great SDF articles you should read:
+>
+> - [2D SDF - Basic Shapes and Visualization](https://www.artstation.com/blogs/briz/mnRN/2d-sdf-basic-shapes-and-visualization-material-function-library-ue5) by Fabrizio Bergamo
+> - [What Are SDFs Anyway?](https://joyrok.com/What-Are-SDFs-Anyway) by Joyrok
