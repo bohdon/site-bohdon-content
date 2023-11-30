@@ -2,10 +2,10 @@
 draft: true
 title: "Smooth SDF Shape Edges"
 date: 2023-11-29T11:51:02-05:00
-tags: []
+tags: [unreal, graphics, ui]
 image:
-imageIcon:
-summary:
+imageIcon: fa-sharp fa-light fa-shapes
+summary: Methods for resolving SDF gradients into crisp clean shapes for UI and VFX materials.
 ---
 
 [SDF shapes](https://iquilezles.org/articles/distfunctions2d/) are a flexible way to create resolution
