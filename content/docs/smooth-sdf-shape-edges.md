@@ -160,7 +160,10 @@ the filter width on the UVs instead of the SDF.
   the price though, this seems more than acceptable.
 - The remaining artifacts and disintegration are gone.
 
-The reason this works better than the previous example is because the filter width calculation is much simpler for UVs.
+Now that we're giving DDX/DDY a float2, it will return a float2, and interestingly DDX will only output to R channel,
+and DDY to G channel. So we need to use component masks to grab the values this time.
+
+The reason this method works better than the previous example is because the filter width calculation is much simpler for UVs.
 Since the 'slope' of undistorted UVs doesn't change much, you get a reliable filter width across the whole image.
 
 ![ddx uvs graph](/img/smooth-sdf-shape-edges/graph_uvddx.png)
