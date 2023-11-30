@@ -18,11 +18,13 @@ often run into aliasing and inconsistent edge treatment at different scales.
 
 The objective is to turn some SDF gradient like this...
 
-![sdf demo shapes](/img/smooth-sdf-shape-edges/demoShapes_sdf.png "example SDF in UV space, only visualizing positive values")
+{{< magnify alt="sdf demo shapes" src="/img/smooth-sdf-shape-edges/demoShapes_sdf.png"
+  caption="example SDF in UV space, only visualizing positive values" >}}
 
 ...into a black and white crisply-edged shape like this:
 
-![goal solid shapes](/img/smooth-sdf-shape-edges/demoShapes_filterBiasUVs.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filterBiasUVs.png"
+  caption="mouse over to zoom" >}}
 
 - Smooth crisp edges regardless of scale.
 - No artifacts or disintegration even with small edge widths.
@@ -36,7 +38,7 @@ The most basic method is to simply ceiling the value. Anything > 0 will be white
 
 ![ceiling graph](/img/smooth-sdf-shape-edges/graph_ceil.png)
 
-![ceiling result](/img/smooth-sdf-shape-edges/demoShapes_ceil.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_ceil.png" alt="ceiling result" >}}
 
 - The obvious result is a lot of aliasing, and the shapes can disappear at small scales.
 - At 1x, you can notice the circle is designed to be exactly 1px, which we want to try to preserve in the next steps.
@@ -48,7 +50,7 @@ A very common method of softening the edge is to use [smoothstep](https://en.wik
 
 ![smoothstep graph](/img/smooth-sdf-shape-edges/graph_smoothFixed.png)
 
-![smoothstep result](/img/smooth-sdf-shape-edges/demoShapes_smoothFixed.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_smoothFixed.png" alt="smoothstep result" >}}
 
 - Given a small-ranged Min and Max value, a smooth gradient can be created which softens the shape nicely at 1x.
 - Since the range is fixed right now, the shape is blurry at large scales and still aliased/disappearing when small.
@@ -71,7 +73,7 @@ Since we're going for crisp edges, the smoothness of smoothstep is unnecessary a
 
 ![divide graph](/img/smooth-sdf-shape-edges/graph_divide.png)
 
-![divide result](/img/smooth-sdf-shape-edges/demoShapes_divide.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_divide.png" alt="divide result" >}}
 
 - At 10x you can notice the slightly harder linear gradient, but at 1x the difference is indistinguishable.
 - Circle stroke width is still too large.
@@ -85,7 +87,7 @@ perform the smoothing on the interior of each shape.
 
 ![divide inner graph](/img/smooth-sdf-shape-edges/graph_divideInner.png)
 
-![divide inner result](/img/smooth-sdf-shape-edges/demoShapes_divideInner.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_divideInner.png" alt="divide inner result" >}}
 
 - The result is noticeably thinner at 10x since the gradient now goes inwards instead of out.
 - The circle at 1x is looking a lot more like 1px wide, with some ok-not-great smoothing compared to ceiling.
@@ -100,7 +102,7 @@ name than the previously mentioned 'smooth edge gradient width'.
 
 ![filter width graph](/img/smooth-sdf-shape-edges/graph_filter.png)
 
-![filter width result](/img/smooth-sdf-shape-edges/demoShapes_filter.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filter.png" alt="filter width result" >}}
 
 - The edge sharpness is now consistent regardless of scale.
 - Basically perfect at 10x, but disintegrating at small scales, and even partially at 1x.
@@ -117,7 +119,7 @@ previous fixed value of `0.01`). In this context it helps to think of the deriva
 At smaller scales the slope is much larger, since from pixel to pixel the value changes quickly. At large scales
 the slope is much smaller.
 
-![ddx of sdf](/img/smooth-sdf-shape-edges/demoShapes_sdfddx.png "ddx of the sdf")
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_sdfddx.png" alt="ddx of sdf" caption="ddx of the SDF" >}}
 
 You may notice some artifacts in this image, which will have an impact later.
 
@@ -129,7 +131,7 @@ time with a more intelligent value.
 
 ![filter width bias graph](/img/smooth-sdf-shape-edges/graph_filterBias.png)
 
-![filter width bias result](/img/smooth-sdf-shape-edges/demoShapes_filterBias.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filterBias.png" alt="filter width bias result" >}}
 
 - The edge sharpness is now consistent regardless of scale.
 - The 1x circle looks pretty close to an expected 1px stroke as seen in other apps, even if it's actually more
@@ -154,11 +156,11 @@ the filter width on the UVs instead of the SDF.
 
 ![filter width bias graph](/img/smooth-sdf-shape-edges/graph_filterBiasUVs.png)
 
-![filter width bias result](/img/smooth-sdf-shape-edges/demoShapes_filterBiasUVs.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filterBiasUVs.png" alt="uv filter width bias result" >}}
 
 - Beautiful, no notes.
-- Well... some notes, the 0.25x seems a little fuzzy IMO, but feels very acceptable considering we're crunching a 1px width
-  circle down to 25%.
+- Well... some notes, the overall image quality feels good but not better than many vector drawing applications. For
+  the price though, this seems more than acceptable.
 - The remaining artifacts and disintegration are gone.
 
 The reason this works better than the previous example is because the filter width calculation is much simpler for UVs.
@@ -166,7 +168,7 @@ Since the 'slope' of undistorted UVs doesn't change much, you get a reliable fil
 
 ![ddx uvs graph](/img/smooth-sdf-shape-edges/graph_uvddx.png)
 
-![ddx uvs graph](/img/smooth-sdf-shape-edges/demoShapes_ddx.png)
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_ddx.png" alt="ddx of the UVs" caption="ddx of the UVs" >}}
 
 The other benefit of this method is that you can calculate the filter width for a set of UVs once, then reuse it for
 all SDF shapes generated from them. If you scale or distort the UVs though, you'll need to calculate a new filter width.
