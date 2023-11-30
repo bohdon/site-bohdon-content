@@ -201,7 +201,7 @@ like the following:
 
 ![ddx uvs graph](/img/smooth-sdf-shape-edges/graph_fullCircleSDFFuncs.png "the same graph with material functions")
 
-These functions are available in the [MGFX plugin](https://github.com/bohdon/MGFXPlugin) if you want to check them out.
+These functions are available in the [MGFX plugin](https://github.com/bohdon/MGFXPlugin) so check them out!
 
 > More great SDF articles you should read:
 >
