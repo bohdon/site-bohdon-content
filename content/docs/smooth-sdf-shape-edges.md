@@ -12,10 +12,6 @@ summary: Methods for resolving SDF gradients into crisp clean shapes for UI and 
 independent materials for UI and VFX. Resolving those SDFs into solid shapes can be tricky though, since you
 often run into aliasing and inconsistent edge treatment at different scales.
 
-{{< fontawesome class="fa-sharp fa-solid fa-circle-info" >}} If you're looking for an intro to SDFs check out joyrok's
-[What Are SDFs Anyway?](https://joyrok.com/What-Are-SDFs-Anyway).
-{.notification}
-
 The objective is to turn some SDF gradient like this...
 
 {{< magnify alt="sdf demo shapes" src="/img/smooth-sdf-shape-edges/demoShapes_sdf.png"
@@ -24,9 +20,9 @@ The objective is to turn some SDF gradient like this...
 ...into a black and white crisply-edged shape like this:
 
 {{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filterBiasUVs.png"
-  caption="mouse over to zoom" >}}
+  caption="mouse over or touch to zoom" >}}
 
-- Smooth crisp edges regardless of scale.
+- Crisp anti-aliased edges regardless of scale.
 - No artifacts or disintegration even with small edge widths.
 - Accurate designer-friendly measurements -- in this example the Circle has a stroke width of 1px at 1x.
 
@@ -42,7 +38,7 @@ The most basic method is to simply ceiling the value. Anything > 0 will be white
 
 - The obvious result is a lot of aliasing, and the shapes can disappear at small scales.
 - At 1x, you can notice the circle is designed to be exactly 1px, which we want to try to preserve in the next steps.
-- Using a 1-x since SDFs natively have positive values on the outside and we want the shapes to be white-on-black.
+- A 1-x is used since SDFs natively have positive values on the outside, but we want white on the interior.
 
 ### Smoothstep Fixed
 
@@ -52,7 +48,7 @@ A very common method of softening the edge is to use [smoothstep](https://en.wik
 
 {{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_smoothFixed.png" alt="smoothstep result" >}}
 
-- Given a small-ranged Min and Max value, a smooth gradient can be created which softens the shape nicely at 1x.
+- Given a small-ranged Min and Max value, a smooth gradient is created which softens the shape nicely at 1x.
 - Since the range is fixed right now, the shape is blurry at large scales and still aliased/disappearing when small.
 - The circle at 1x appears larger than 1 pixel in width.
 - This method is actually great when you're going for a glow or shadow instead of crisp edges.
@@ -89,7 +85,7 @@ perform the smoothing on the interior of each shape.
 
 {{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_divideInner.png" alt="divide inner result" >}}
 
-- The result is noticeably thinner at 10x since the gradient now goes inwards instead of out.
+- The result is noticeably thinner at 10x since the ~13px gradient now goes inwards instead of out.
 - The circle at 1x is looking a lot more like 1px wide, with some ok-not-great smoothing compared to ceiling.
 - Ditched the `1-x` operation from previous methods since the interior distances are now positive.
 
@@ -113,11 +109,12 @@ of the SDF are changing.
 
 #### Visualizing derivative of the SDF
 
-With this method we're calculating what range we need to use to have a 1-pixel-wide edge gradient. With the example
-of a 128x128 image, the DDX for the R channel of the default UVs would be `1/128` or `0.0078` (not dissimilar from our
-previous fixed value of `0.01`). In this context it helps to think of the derivatives as the slope of the gradient.
-At smaller scales the slope is much larger, since from pixel to pixel the value changes quickly. At large scales
-the slope is much smaller.
+With this method we're calculating what range we need to use to have a 1-pixel-wide edge gradient at all scales.
+With the example of a 128x128 image, if you picture a linear gradient going from 0..1 (like a default tex coord)
+the change from one pixel to the next would be `1/128` or `0.0078` (not dissimilar from our previous fixed
+value of `0.01`). In this context it helps to think of the derivatives as the slope of the gradient. At smaller
+scales the slope is much larger, since from pixel to pixel the value changes quickly. At large scales the slope
+is much smaller.
 
 {{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_sdfddx.png" alt="ddx of sdf" caption="ddx of the SDF" >}}
 
@@ -133,16 +130,16 @@ time with a more intelligent value.
 
 {{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filterBias.png" alt="filter width bias result" >}}
 
-- The edge sharpness is now consistent regardless of scale.
+- The smaller line widths are now much more visible and stable, but still have some disintegration.
 - The 1x circle looks pretty close to an expected 1px stroke as seen in other apps, even if it's actually more
   like 2px in most places when you consider anti-aliasing.
 - 10x still looks great, the small inflation of ~0.00078 does basically nothing.
-- 0.25x and 0.5x actually show up now, but still have some disintegration.
 - There's still a few artifacts overall -- at the top of the 1x circle, and in various intersections.
 
 The magic value of `0.5` is intended such that half of the total inflation is added to 'each side'. In most cases we're
 inflating to fix thin width strokes, so each side of the stroke will be increased by this value. If we added the full
-value of 1, the inflation becomes too noticeable and our 1px circle no longer looks like 1px.
+value of 1, the inflation becomes too noticeable and our 1px circle no longer looks like 1px. Try playing with
+this value to see how it affects the thinner lines.
 
 We've also switched to using `Max` instead of `Add` for the filter width calculation, since the extra inflation of their
 combined values adds a bit _too_ much softening.
@@ -173,7 +170,8 @@ Since the 'slope' of undistorted UVs doesn't change much, you get a reliable fil
 The other benefit of this method is that you can calculate the filter width for a set of UVs once, then reuse it for
 all SDF shapes generated from them. If you scale or distort the UVs though, you'll need to calculate a new filter width.
 This method also may not work if you just don't have access to the original SDF UVs, e.g. the SDF was generated by
-another tool or is coming from a texture. Even so, there may still be ways to try to re-create them.
+another tool or is coming from a texture. Even so, is there a way to recreate an approximation of them that's good
+enough to serve this purpose?
 
 #### More on DDX and DDY
 
@@ -187,3 +185,7 @@ does a great job explaining. Some key pieces are copied here:
 > Derivatives are calculated by taking differences between the pixels in a quad. For instance, ddx will subtract the values in the pixels on the left side of the quad from the values on the right side, and ddy will subtract the bottom pixels from the top ones. The differences can then be returned as the derivative to all four pixels in the quad.
 
 This is a big reason why I prefer using the DDX of the UVs, since comparing quads is much more stable.
+
+// TODO: performance
+
+// TODO: fix or remove comments in material graphs
