@@ -116,7 +116,7 @@ value of `0.01`). In this context it helps to think of the derivatives as the sl
 scales the slope is much larger, since from pixel to pixel the value changes quickly. At large scales the slope
 is much smaller.
 
-{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_sdfddx.png" alt="ddx of sdf" caption="absolute ddx + ddy of the SDF" >}}
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_sdfderivative.png" alt="ddx of sdf" caption="absolute ddx + ddy of the SDF" >}}
 
 You may notice some artifacts in this image, which will have an impact later.
 
