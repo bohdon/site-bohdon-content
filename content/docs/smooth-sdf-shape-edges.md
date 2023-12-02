@@ -208,15 +208,10 @@ like the following:
 
 These functions are available in the [MGFX plugin](https://github.com/bohdon/MGFXPlugin) so check them out!
 
-> More great SDF articles you should read:
->
-> - [2D SDF - Basic Shapes and Visualization](https://www.artstation.com/blogs/briz/mnRN/2d-sdf-basic-shapes-and-visualization-material-function-library-ue5) by Fabrizio Bergamo
-> - [What Are SDFs Anyway?](https://joyrok.com/What-Are-SDFs-Anyway) by Joyrok
-
 ### Performance
 
-Here's some performance information according to the material editor stats for each method, taken using a single
-circle SDF:
+Here's some performance info according to the material editor stats for each method, taken using a single
+solid circle SDF:
 
 - Circle SDF raw: 27 instructions
 - **Ceiling**: 29 instructions
@@ -232,3 +227,10 @@ an additional instruction, so in the material functions of MGFX plugin it's actu
 enable via static bool depending on whether the shape needs it (notice the unconnected EnableFilterBias input of
 the last example graph). Large shapes and fat lines would likely never need the bias since they won't disappear
 at small scales.
+
+---
+
+> More great SDF articles you should read:
+>
+> - [2D SDF - Basic Shapes and Visualization](https://www.artstation.com/blogs/briz/mnRN/2d-sdf-basic-shapes-and-visualization-material-function-library-ue5) by Fabrizio Bergamo
+> - [What Are SDFs Anyway?](https://joyrok.com/What-Are-SDFs-Anyway) by Joyrok
