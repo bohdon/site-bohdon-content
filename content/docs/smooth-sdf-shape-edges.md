@@ -63,7 +63,7 @@ The large gradient seen in the 10x example then makes sense because that image s
 and 1280 x 0.01 is 12.8, giving a roughly 13 pixel edge. This may seem obvious or irrelevant but it helps when
 trying to understand the later examples.
 
-### Divide
+### Divide Fixed
 
 Since we're going for crisp edges, the smoothness of smoothstep is unnecessary and a divide can be used instead.
 
@@ -75,7 +75,7 @@ Since we're going for crisp edges, the smoothness of smoothstep is unnecessary a
 - Circle stroke width is still too large.
 - A saturate is used to clamp the results to 0..1.
 
-### Divide Inner
+### Divide Fixed Inner
 
 The previous two methods naturally inflate the shape, since the shape itself has a boundary at 0, and the resulting
 edge gradients were between 0 and 0.01. To fix this, we can flip the SDF (multiply by `-1`), which will essentially
@@ -116,7 +116,7 @@ value of `0.01`). In this context it helps to think of the derivatives as the sl
 scales the slope is much larger, since from pixel to pixel the value changes quickly. At large scales the slope
 is much smaller.
 
-{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_sdfddx.png" alt="ddx of sdf" caption="ddx of the SDF" >}}
+{{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_sdfddx.png" alt="ddx of sdf" caption="absolute ddx + ddy of the SDF" >}}
 
 You may notice some artifacts in this image, which will have an impact later.
 
@@ -136,10 +136,14 @@ time with a more intelligent value.
 - 10x still looks great, the small inflation of ~0.00078 does basically nothing.
 - There's still a few artifacts overall -- at the top of the 1x circle, and in various intersections.
 
-The magic value of `0.5` is intended such that half of the total inflation is added to 'each side'. In most cases we're
-inflating to fix thin width strokes, so each side of the stroke will be increased by this value. If we added the full
-value of 1, the inflation becomes too noticeable and our 1px circle no longer looks like 1px. Try playing with
-this value to see how it affects the thinner lines.
+The reasoning for this method is: if we want to have a consistent edge treatment we need at least a minimum amount of
+visible shape over which to perform the filtering. So adding an inflation that's in this case 50% of the filter width
+gives us content to display instead of shapes disappearing.
+
+That magic value of `0.5` is intended such that half of the filter width is added to each 'side', so the total is
+1x the filter width for strokes and small objects (e.g. when you consider the two sides of a stroke). If we added
+the full value of 1 the inflation becomes too noticeable and our 1px circle no longer looks like 1px. Try playing
+with this value to see how it affects the thinner lines.
 
 We've also switched to using `Max` instead of `Add` for the filter width calculation, since the extra inflation of their
 combined values adds a bit _too_ much softening.
@@ -155,10 +159,11 @@ the filter width on the UVs instead of the SDF.
 
 {{< magnify src="/img/smooth-sdf-shape-edges/demoShapes_filterBiasUVs.png" alt="uv filter width bias result" >}}
 
-- Beautiful, no notes.
-- Well... some notes, the overall image quality feels good but not better than many vector drawing applications. For
-  the price though, this seems more than acceptable.
+- Beautiful, no notes... well... some notes:
+- The overall image quality feels good but not better than many vector drawing applications.
+- The .25x feels a tiny bit fuzzy, but it's better than it disappearing when crunched to small sizes.
 - The remaining artifacts and disintegration are gone.
+- For the price, this seems more than acceptable.
 
 Now that we're giving DDX/DDY a float2, it will return a float2, and interestingly DDX will only output to R channel,
 and DDY to G channel. So we need to use component masks to grab the values this time.
@@ -207,3 +212,23 @@ These functions are available in the [MGFX plugin](https://github.com/bohdon/MGF
 >
 > - [2D SDF - Basic Shapes and Visualization](https://www.artstation.com/blogs/briz/mnRN/2d-sdf-basic-shapes-and-visualization-material-function-library-ue5) by Fabrizio Bergamo
 > - [What Are SDFs Anyway?](https://joyrok.com/What-Are-SDFs-Anyway) by Joyrok
+
+### Performance
+
+Here's some performance information according to the material editor stats for each method, taken using a single
+circle SDF:
+
+- Circle SDF raw: 27 instructions
+- **Ceiling**: 29 instructions
+- **Smoothstep Fixed**: 31 instructions
+- **Divide Fixed**: 28 instructions
+- **Divide Fixed Inner**: 28 instructions
+- **Filter Width**: 31 instructions
+- **Filter Width Bias**: 32 instructions
+- **UV Filter Width Bias**: 32 instructions
+
+People say not to take these stats at face value, since in practice the results can vary. But the bias obviously adds
+an additional instruction, so in the material functions of MGFX plugin it's actually an optional feature you can
+enable via static bool depending on whether the shape needs it (notice the unconnected EnableFilterBias input of
+the last example graph). Large shapes and fat lines would likely never need the bias since they won't disappear
+at small scales.
