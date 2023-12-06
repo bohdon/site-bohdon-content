@@ -13,10 +13,15 @@ summary: Create a custom thumbnail renderer for your own classes, like an icon
   for a gameplay item data asset.
 ---
 
-A custom thumbnail renderer allows you to draw anything you want in the thumbnail of an asset in the Content Browser. This is what allows meshes, materials, and textures in the editor to display something useful, instead of a generic icon. In this example a custom thumbnail renderer is used to give a unique icon to gameplay item data assets, so that you can browse for pickups, potions, or any other game items easily.
+## Thumbnail Renderers
 
-- Thumbnail renderers handle drawing asset thumbnails in the Content Browser.
-- `UDefaultSizedThumbnailRenderer` is a commonly used renderer that defines a fixed size.
+A custom thumbnail renderer allows you to draw anything you want in the thumbnail of an asset in the Content Browser.
+This is what allows meshes, materials, and textures in the editor to display something useful and asset-specific,
+instead of a generic icon. `UDefaultSizedThumbnailRenderer` is a commonly used renderer for fixed size icons --
+and its what the example in this doc will use.
+
+## Setup
+
 - In an Editor module, make sure at least these dependencies are added:
 
 ```c#
@@ -37,7 +42,13 @@ PrivateDependencyModuleNames.AddRange(new string[]
 });
 ```
 
-- Create a subclass, and implement `Draw`, then make calls to `Canvas->Draw*` using any available texture assets.
+## Example Renderer
+
+In this example a custom thumbnail renderer is used to give a unique icon to gameplay item data assets, so that you can
+browse for pickups, potions, or any other game items easily.
+
+- Subclass `UDefaultSizedThumbnailRenderer` and implement `Draw`.
+- Make calls to `Canvas->Draw*` using any available texture assets.
 
 ```c++
 UCLASS()
@@ -50,9 +61,9 @@ class UGameplayItemDefThumbnailRenderer : public UDefaultSizedThumbnailRenderer
 };
 ```
 
-- This example draws a thumbnail for a `UDataAsset` called `UGameplayItemDef`.
-- Each item definition asset has a list of item fragments (just like items in [Lyra](https://docs.unrealengine.com/5.0/en-US/lyra-sample-game-in-unreal-engine/)).
-- The thumbnail renderer retrieves a UI data fragment, and uses its `Icon` property, a `USlateBrushAsset`.
+- This example draws a thumbnail for a data asset called `UGameplayItemDef`.
+- Each item definition asset has a list of item fragments (just like items in [Lyra](https://docs.unrealengine.com/en-US/lyra-sample-game-in-unreal-engine/)).
+- The thumbnail renderer retrieves the `Icon` property from the item's UI data, which is a `USlateBrushAsset`.
 
 ```c++
 void UGameplayItemDefThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, uint32 Width, uint32 Height, FRenderTarget* Viewport,
@@ -98,8 +109,10 @@ void UGameplayItemDefThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, 
 }
 ```
 
+## Register in Module
+
 - Register the thumbnail renderer for a specific class in your editor module.
-- The engine must be initialized, so you should use `FCoreDelegates::OnPostEngineInit` and perform the registration in a new `OnPostEngineInit` function to your module if necessary.
+- The engine must be initialized, so use `FCoreDelegates::OnPostEngineInit` and add a `OnPostEngineInit` function if necessary.
 
 ```c++
 void FGameplayItemsEditorModule::StartupModule()
