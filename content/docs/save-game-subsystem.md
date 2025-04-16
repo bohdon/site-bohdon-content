@@ -9,11 +9,11 @@ tags:
 summary: Overview of how to setup a save game subsystem for more easily managing
   save states and debug playing from any level.
 ---
-### Goals and Features
+# Goals and Features
 - Playing from entry level / main menu does not perform any debug save game loading or setup
 - Playing from any other level automatically loads a debug save character slot that auto saves on stop PIE
 
-### Overview
+# Overview
 There's a lot of aspects to it, but some high level points are:
 - Save game subsystem to manage a shared USaveGame instance, that can create, load, save, and auto save with cooldowns easily. It also has a setting `bIsSavingDisabled` which means you can continuously load a debug save slot and not worry about modifying it.
 - Game instance with a EMyGameInstanceState that looks like:

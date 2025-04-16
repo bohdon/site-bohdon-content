@@ -14,7 +14,7 @@ TODO: general key bindings table
 
 Writing this article makes me wonder if there's some additional ways to bind Alt + IJKL to arrow keys in other applications at the OS level...
 
-### VSCode IJKL Keybindings
+# VSCode IJKL Keybindings
 ```json
 [
 

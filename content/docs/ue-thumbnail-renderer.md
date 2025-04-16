@@ -13,14 +13,14 @@ summary: Create a custom thumbnail renderer for your own classes, like an icon
   for a gameplay item data asset.
 ---
 
-## Thumbnail Renderers
+# Thumbnail Renderers
 
 A custom thumbnail renderer allows you to draw anything you want in the thumbnail of an asset in the Content Browser.
 This is what allows meshes, materials, and textures in the editor to display something useful and asset-specific,
 instead of a generic icon. `UDefaultSizedThumbnailRenderer` is a commonly used renderer for fixed size icons --
 and its what the example in this doc will use.
 
-## Setup
+# Setup
 
 - In an Editor module, make sure at least these dependencies are added:
 
@@ -42,7 +42,7 @@ PrivateDependencyModuleNames.AddRange(new string[]
 });
 ```
 
-## Example Renderer
+# Example Renderer
 
 In this example a custom thumbnail renderer is used to give a unique icon to gameplay item data assets, so that you can
 browse for pickups, potions, or any other game items easily.
@@ -109,7 +109,7 @@ void UGameplayItemDefThumbnailRenderer::Draw(UObject* Object, int32 X, int32 Y, 
 }
 ```
 
-## Register in Module
+# Register in Module
 
 - Register the thumbnail renderer for a specific class in your editor module.
 - The engine must be initialized, so use `FCoreDelegates::OnPostEngineInit` and add a `OnPostEngineInit` function if necessary.

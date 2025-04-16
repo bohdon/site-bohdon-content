@@ -10,7 +10,7 @@ summary: Thoughts and tips on keeping Unreal Engine tracked in perforce.
 ---
 This document focuses on notes and tips for managing the Unreal Engine source within perforce. It refers to a workflow in which the Epic Games Unreal depot is essentially mirrored from their perforce to your studio perforce.
 
-### The Pros
+# The Pros
 
 - Everything in one place.
   - You'll never go back to a project and be unsure which engine was used or have to sync or download it from somewhere else.
@@ -25,7 +25,7 @@ This document focuses on notes and tips for managing the Unreal Engine source wi
   - Perforce does not need to store duplicates of archive files on the server when you branch or copy the engine into different project depots, meaning you only end up storing one copy of the engine on your sever, plus the deltas for each engine version. Populating a new project depot takes seconds.
   - With the Engine in perforce, and after setting up UGS, you can also filter what content from the Engine you sync, meaning you skip some unnecessary content and keep a smaller footprint on each users machine.
 
-### The Cons
+# The Cons
 
 - Depending on how you actually add Unreal to perforce and track it, it can be a lot of work! there's over 200k files!
 - Some operations are really slow.
@@ -36,7 +36,7 @@ This document focuses on notes and tips for managing the Unreal Engine source wi
   - An average good build time for the engine from scratch is ~45min.
   - If you stay on top of which configurations you are building and why, this should only need to happen the first time, when updating the engine, or when modifying engine headers that are really popular.
 
-### What are the alternatives?
+# What are the alternatives?
 
 - Use a stock engine version from the Epic Games Launcher
   - This works well for a lot of new teams, but you'll eventually hit a wall or limitation.

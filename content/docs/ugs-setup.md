@@ -12,7 +12,7 @@ summary: How to setup Unreal Game Sync and distribute Unreal to your team.
 ---
 I've noticed a number of people that have heard about UGS but think "large teams use UGS, but what can I use on a small team to easily distribute Unreal?" The answer is UGS! even for a team of two it can be extremely helpful and is worth setting up. This guide is intended to lower the barrier on setting up UGS and show how straightforward it is to use, even for small teams.
 
-### What is Unreal Game Sync (UGS)?
+# What is Unreal Game Sync (UGS)?
 
 - A simple application that facilitates syncing project and engine content from perforce, with the power of knowing how Unreal is setup, allowing it to perform other helpful operations.
 - Made by Epic Games and used on Fortnite and other projects.
@@ -21,7 +21,7 @@ I've noticed a number of people that have heard about UGS but think "large teams
 - A number of [other features](https://docs.unrealengine.com/5.0/en-US/unreal-game-sync-ugs-for-unreal-engine/).
 - For more info on why Epic made UGS, see this [Fortnite workflow video](https://www.youtube.com/watch?v=p4RcDpGQ_tI).
 
-### Why should I _not_ use UGS?
+# Why should I _not_ use UGS?
 
 - You are using Blueprints only, no C++.
 - You _really_ want to avoid using a custom build of the engine.
@@ -31,7 +31,7 @@ I've noticed a number of people that have heard about UGS but think "large teams
 
 ---
 
-## Studio Setup
+# Studio Setup
 
 This setup only needs to be done once per studio. Since the UGS application itself is developed out of band with any Unreal version and you rarely need to update it. You don't distribute UGS uniquely with each engine or project, just once per studio. The high level overview involves:
 
@@ -39,7 +39,7 @@ This setup only needs to be done once per studio. Since the UGS application itse
 - Add UGS to Perforce, so it can be updated easily and users will automatically get new versions of UGS when available.
 - Distribute the UGS installer.
 
-### Create a studio-specific UGS application and installer
+## Create a studio-specific UGS application and installer
 
 UGS _can_ be distributed right out of the box, but to make it easier on users, you should customize one setting which defines where the UGS application itself lives in your studio's Perforce. That way users can install and run it without any additional info.
 
@@ -61,7 +61,7 @@ TODO: list all files
 ```
 
 
-### Add UGS to Perforce
+## Add UGS to Perforce
 
 - Create the `//UnrealGameSync` stream depot we used above for the default depot path.
 - Create a mainline stream named `Main`.
@@ -73,13 +73,13 @@ TODO: list all files
 TODO: list all files being submitted
 ```
 
-### Distribute the Installer
+## Distribute the Installer
 
 - TODO
 
 ---
 
-## Per-Project Setup
+# Per-Project Setup
 
 This setup is done once per project. The high level overview includes:
 - Add Unreal Engine to perforce

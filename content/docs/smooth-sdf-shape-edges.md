@@ -8,7 +8,7 @@ images: [/img/smooth-sdf-shape-edges/page-image.png]
 summary: Methods for resolving SDF gradients into crisp clean shapes for UI and VFX materials.
 ---
 
-## The Goal
+# The Goal
 
 [SDF shapes](https://iquilezles.org/articles/distfunctions2d/) are a flexible way to create resolution
 independent materials for UI and VFX. Resolving those SDFs into solid shapes can be tricky though, since you
@@ -30,7 +30,7 @@ The objective is to turn some SDF gradient like this...
 
 This is the ideal result we're going for, and this doc will cover other methods and how to get there.
 
-## No Filter
+# No Filter
 
 The most basic method is to simply ceiling the value. Anything > 0 will be white and everything else black.
 
@@ -42,7 +42,7 @@ The most basic method is to simply ceiling the value. Anything > 0 will be white
 - At 1x, you can notice the circle is designed to be exactly 1px, which we want to try to preserve in the next steps.
 - A 1-x is used since SDFs natively have positive values on the outside, but we want white on the interior.
 
-## Smoothstep Fixed
+# Smoothstep Fixed
 
 A very common method of softening the edge is to use [smoothstep](https://en.wikipedia.org/wiki/Smoothstep).
 
@@ -65,7 +65,7 @@ The large gradient seen in the 10x example then makes sense because that image s
 and 1280 x 0.01 is 12.8, giving a roughly 13 pixel edge. This may seem obvious or irrelevant but it helps when
 trying to understand the later examples.
 
-## Divide Fixed
+# Divide Fixed
 
 Since we're going for crisp edges, the smoothness of smoothstep is unnecessary and a divide can be used instead.
 
@@ -77,7 +77,7 @@ Since we're going for crisp edges, the smoothness of smoothstep is unnecessary a
 - Circle stroke width is still too large.
 - A saturate is used to clamp the results to 0..1.
 
-## Divide Fixed Inner
+# Divide Fixed Inner
 
 The previous two methods naturally inflate the shape, since the shape itself has a boundary at 0, and the resulting
 edge gradients were between 0 and 0.01. To fix this, we can flip the SDF (multiply by `-1`), which will essentially
@@ -91,7 +91,7 @@ perform the smoothing on the interior of each shape.
 - The circle at 1x is looking a lot more like 1px wide, with some ok-not-great smoothing compared to ceiling.
 - Ditched the `1-x` operation from previous methods since the interior distances are now positive.
 
-## Filter Width
+# Filter Width
 
 To finally solve the large gradient at 10x, we can use derivatives to determine the scale at which the material is
 viewed, and adjust accordingly. Using DDX and DDY, we calculate the change between neighboring pixels, which can
@@ -109,7 +109,7 @@ We use both the DDX and DDY (derivatives of X and Y), take their absolute values
 Which in this case will give slightly larger (and therefore smoother) values on diagonals, where both X and Y values
 of the SDF are changing.
 
-### Visualizing SDF Derivatives
+## Visualizing SDF Derivatives
 
 With this method we're calculating what range we need to use to have a 1-pixel-wide edge gradient at all scales.
 With the example of a 128x128 image, if you picture a linear gradient going from 0..1 (like a default tex coord)
@@ -122,7 +122,7 @@ is much smaller.
 
 You may notice some artifacts in this image, which will have an impact later.
 
-## Filter Width Bias
+# Filter Width Bias
 
 Now that we've calculated the filter width, we can fix the biggest issue remaining, which is thin shapes dissolving
 into nothing. By adding the calculated filter width to the SDF first, we essentially inflate the shape again, but this
@@ -150,7 +150,7 @@ with this value to see how it affects the thinner lines.
 We've also switched to using `Max` instead of `Add` for the filter width calculation, since the extra inflation of their
 combined values adds a bit _too_ much softening.
 
-## UV Filter Width Bias
+# UV Filter Width Bias
 
 If you compare the areas that are still problematic with the DDX visualization from before, you can see there are black
 spots where the derivatives just fail to calculate clean values. What's nice about SDFs though, is that when calculated
@@ -183,7 +183,7 @@ This method also may not work if you just don't have access to the original SDF 
 another tool or is coming from a texture. Even so, is there a way to recreate an approximation of them that's good
 enough to serve this purpose?
 
-## More on DDX and DDY
+# More on DDX and DDY
 
 It's understandable that using the DDX/DDY of the SDF instead of the UVs causes more artifacts since the slope of
 an SDF changes, especially around the areas we want to sharpen, but it's also likely due to how they are calculated.
@@ -196,7 +196,7 @@ does a great job explaining. Some key pieces are copied here:
 
 This is a big reason why I prefer using the DDX of the UVs, since comparing quads is much more stable.
 
-## Full Example
+# Full Example
 
 Here's a full material graph of a Circle SDF, converted to a stroke, then filled using the last technique above,
 with some nodes expanded to see previews.
@@ -210,7 +210,7 @@ like the following:
 
 These functions are available in the [MGFX plugin](https://github.com/bohdon/MGFXPlugin) so check them out!
 
-## Performance
+# Performance
 
 Here's some performance info according to the material editor stats for each method, taken using a single
 solid circle SDF:
